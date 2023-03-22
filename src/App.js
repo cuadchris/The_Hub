@@ -1,5 +1,5 @@
 import './App.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import Dashboard from './pages/dashboard/Dashboard';
 import Create from './pages/create/Create';
 import Project from './pages/project/Project';
@@ -7,23 +7,43 @@ import SignUp from './pages/signup/SignUp';
 import Login from './pages/login/Login';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
+import { useAuthContext } from './hooks/useAuthContext';
 
 function App() {
+  const { authIsReady, user } = useAuthContext();
+
   return (
     <div className='App'>
-      <BrowserRouter>
-        <Sidebar />
-        <div className='container'>
-          <Navbar />
-          <Routes>
-            <Route path='/' element={<Dashboard />} />
-            <Route path='/create' element={<Create />} />
-            <Route path='/project/:id' element={<Project />} />
-            <Route path='/signup' element={<SignUp />} />
-            <Route path='/login' element={<Login />} />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      {authIsReady && (
+        <BrowserRouter>
+          <Sidebar />
+          <div className='container'>
+            <Navbar />
+            <Routes>
+              <Route
+                path='/'
+                element={user ? <Dashboard /> : <Navigate to='/login' />}
+              />
+              <Route
+                path='/create'
+                element={user ? <Create /> : <Navigate to='/login' />}
+              />
+              <Route
+                path='/project/:id'
+                element={user ? <Project /> : <Navigate to='/login' />}
+              />
+              <Route
+                path='/signup'
+                element={user ? <Navigate to='/' /> : <SignUp />}
+              />
+              <Route
+                path='/login'
+                element={user ? <Navigate to='/' /> : <Login />}
+              />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      )}
     </div>
   );
 }
