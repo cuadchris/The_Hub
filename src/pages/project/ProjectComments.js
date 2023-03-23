@@ -31,7 +31,7 @@ const ProjectComments = ({ project }) => {
 
   return (
     <div className='project-comments'>
-      <h4>project comments</h4>
+      <h4>Comments</h4>
 
       <ul>
         {project.comments.length > 0 &&
