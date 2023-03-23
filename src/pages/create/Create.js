@@ -3,7 +3,9 @@ import Select from 'react-select';
 import { timestamp } from '../../firebase/config';
 import { useCollection } from '../../hooks/useCollection';
 import { useAuthContext } from '../../hooks/useAuthContext';
+import { useFirestore } from '../../hooks/useFirestore';
 import './Create.css';
+import { useNavigate } from 'react-router-dom';
 
 const categories = [
   { value: 'development', label: 'Development' },
@@ -20,9 +22,12 @@ const Create = () => {
   const [assignedUsers, setAssignedUsers] = useState([]);
   const [formError, setFormError] = useState(null);
 
+  const { addDocument, response } = useFirestore('projects');
   const { documents } = useCollection('users');
   const { user } = useAuthContext();
   const [users, setUsers] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (documents) {
@@ -33,7 +38,7 @@ const Create = () => {
     }
   }, [documents]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setFormError(null);
 
@@ -70,7 +75,10 @@ const Create = () => {
       assignedUsersList,
     };
 
-    console.log(project);
+    await addDocument(project);
+    if (!response.error) {
+      navigate('/');
+    }
   };
 
   return (
