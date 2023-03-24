@@ -37,6 +37,8 @@ export const useLogout = () => {
         setIsPending(false);
       }
     }
+    // might need to remove this
+    setIsPending(false);
   };
 
   useEffect(() => {
